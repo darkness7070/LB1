@@ -1,0 +1,55 @@
+﻿@model IEnumerable<LB1.Models.Order>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Список заказов</h1>
+
+<p>
+    <a asp-action="CreateNew">Добавить новый</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.ActionLink(@Html.DisplayNameFor(model => model.Client), "Index", new { sortOrder = ViewBag.NameSortParm })
+            </th>
+            <th>
+                 @Html.ActionLink(@Html.DisplayNameFor(model => model.Address), "Index", new { sortOrder = ViewBag.AddressSortParm })
+            </th>
+            <th>
+                @Html.ActionLink(@Html.DisplayNameFor(model => model.Contact), "Index", new { sortOrder = ViewBag.ContactSortParm })
+                
+            </th>
+            <th>
+                @Html.ActionLink( @Html.DisplayNameFor(model => model.Phone), "Index", new { sortOrder = ViewBag.PhoneSortParm })
+               
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Client)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Address)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Contact)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Phone.Name)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Изменить</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Информация</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
