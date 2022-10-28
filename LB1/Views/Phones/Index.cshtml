@@ -52,5 +52,18 @@
             </td>
         </tr>
 }
+        
     </tbody>
 </table>
+@if(ViewBag.PageNumber > 1)
+        {
+            <a asp-action="Index"
+            asp-route-PageNumber="@(ViewBag.PageNumber - 1)">
+        Назад</a>
+        }
+@if(ViewBag.PageNumber <= ViewBag.PageCount)
+        {
+            <a asp-action="Index"
+            asp-route-PageNumber="@(ViewBag.PageNumber + 1)">
+        Вперёд</a>
+        }

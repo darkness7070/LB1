@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LB1.Models;
 using LB1.data;
-
 namespace LB1.Controllers
 {
     public class PhonesController : Controller
@@ -20,10 +19,15 @@ namespace LB1.Controllers
         }
 
         // GET: Phones
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int PageNumber = 1)
         {
+            int totalSize = _context.Phones.Count();
+            int pageSize = 3;
             var mVCMobileContext = _context.Phones.Include(p => p.IdPhotoNavigation);
-            return View(await mVCMobileContext.ToListAsync());
+            ViewBag.PageNumber = PageNumber;
+            ViewBag.PageCount = totalSize/pageSize;
+
+            return View(await mVCMobileContext.Skip((PageNumber - 1) * pageSize).Take(pageSize).ToListAsync());
         }
 
         // GET: Phones/Details/5
