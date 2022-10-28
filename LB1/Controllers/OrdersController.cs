@@ -5,8 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using LB1.Data;
+using LB1.data;
 using LB1.Models;
+using PagedList;
 
 namespace LB1.Controllers
 {
@@ -21,7 +22,7 @@ namespace LB1.Controllers
 
 
         // GET: Orders
-        public async Task<IActionResult> Index(string sortOrder)
+        public async Task<IActionResult> Index(string sortOrder,string SearchString,string CurrentFilter, int? page)
         {
             ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "client" : "";
             ViewBag.AddressSortParm = sortOrder == "address" ? "address_desc" : "address";
@@ -29,6 +30,14 @@ namespace LB1.Controllers
             ViewBag.PhoneSortParm = sortOrder == "phone" ? "phone_desc" : "phone";
             var orders = from s in _context.Orders.Include(o => o.Phone)
                          select s;
+
+            if (!String.IsNullOrEmpty(SearchString))
+                orders = orders.Where(s => s.Client.Contains(SearchString));
+            if (SearchString != null)
+                page = 1;
+            else
+                CurrentFilter = SearchString;
+            ViewBag.CurrentFilter = SearchString;
             switch (sortOrder)
             {
                 case "client":
@@ -56,7 +65,9 @@ namespace LB1.Controllers
                     orders = orders.OrderBy(s => s.Address);
                     break;
             }
-            return View(await orders.ToListAsync());
+            int pageSize = 3;
+            int pageNumber = (page ?? 1);
+            return View(orders.ToPagedList(pageNumber, pageSize));
         }
 
         // GET: Orders/Details/5

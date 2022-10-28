@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using LB1.Models;
 
-namespace LB1.Data
+namespace LB1.data
 {
     public partial class MVCMobileContext : DbContext
     {
@@ -17,6 +17,7 @@ namespace LB1.Data
         {
         }
 
+        public virtual DbSet<Image> Images { get; set; } = null!;
         public virtual DbSet<Order> Orders { get; set; } = null!;
         public virtual DbSet<Phone> Phones { get; set; } = null!;
 
@@ -37,6 +38,15 @@ namespace LB1.Data
                     .WithMany(p => p.Orders)
                     .HasForeignKey(d => d.PhoneId)
                     .HasConstraintName("FK_Orders_Phones");
+            });
+
+            modelBuilder.Entity<Phone>(entity =>
+            {
+                entity.HasOne(d => d.IdPhotoNavigation)
+                    .WithMany(p => p.Phones)
+                    .HasForeignKey(d => d.IdPhoto)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Phones_images");
             });
 
             OnModelCreatingPartial(modelBuilder);

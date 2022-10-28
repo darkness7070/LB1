@@ -1,4 +1,4 @@
-using LB1.Data;
+using LB1.data;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<MVCMobileContext>();

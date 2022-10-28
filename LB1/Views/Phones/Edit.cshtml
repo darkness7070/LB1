@@ -25,8 +25,13 @@
             </div>
             <div class="form-group">
                 <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" />
+                <input asp-for="Price" class="form-control"/>
                 <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdPhoto" class="control-label"></label>
+                <select asp-for="IdPhoto" class="form-control" asp-items="ViewBag.IdPhoto"></select>
+                <span asp-validation-for="IdPhoto" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

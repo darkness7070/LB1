@@ -1,5 +1,5 @@
 ﻿@model IEnumerable<LB1.Models.Order>
-
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 @{
     ViewData["Title"] = "Index";
 }
@@ -9,24 +9,29 @@
 <p>
     <a asp-action="CreateNew">Добавить новый</a>
 </p>
+@using (Html.BeginForm())
+{
+    <p>
+        Поиск по имени: @Html.TextBox("SearchString")  
+        <input type="submit" value="Поиск" /></p>
+}
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.ActionLink(@Html.DisplayNameFor(model => model.Client), "Index", new { sortOrder = ViewBag.NameSortParm })
+                @Html.ActionLink(@Html.DisplayNameFor(x => x.Client), "Index", new { sortOrder = ViewBag.NameSortParm,currentFilter=ViewBag.CurrentFilter })
             </th>
             <th>
-                 @Html.ActionLink(@Html.DisplayNameFor(model => model.Address), "Index", new { sortOrder = ViewBag.AddressSortParm })
+                 @Html.ActionLink(@Html.DisplayNameFor(x => x.Address), "Index", new { sortOrder = ViewBag.AddressSortParm,currentFilter=ViewBag.CurrentFilter })
             </th>
             <th>
-                @Html.ActionLink(@Html.DisplayNameFor(model => model.Contact), "Index", new { sortOrder = ViewBag.ContactSortParm })
-                
+                @Html.ActionLink(@Html.DisplayNameFor(x => x.Contact), "Index", new { sortOrder = ViewBag.ContactSortParm,currentFilter=ViewBag.CurrentFilter })
             </th>
             <th>
-                @Html.ActionLink( @Html.DisplayNameFor(model => model.Phone), "Index", new { sortOrder = ViewBag.PhoneSortParm })
-               
+                @Html.ActionLink(@Html.DisplayNameFor(x => x.Phone), "Index", new { sortOrder = ViewBag.PhoneSortParm,currentFilter=ViewBag.CurrentFilter })
             </th>
-            <th></th>
+            <th>
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -53,3 +58,4 @@
 }
     </tbody>
 </table>
+

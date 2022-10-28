@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using LB1.Data;
 using LB1.Models;
+using LB1.data;
 
 namespace LB1.Controllers
 {
@@ -22,7 +22,8 @@ namespace LB1.Controllers
         // GET: Phones
         public async Task<IActionResult> Index()
         {
-              return View(await _context.Phones.ToListAsync());
+            var mVCMobileContext = _context.Phones.Include(p => p.IdPhotoNavigation);
+            return View(await mVCMobileContext.ToListAsync());
         }
 
         // GET: Phones/Details/5
@@ -34,18 +35,19 @@ namespace LB1.Controllers
             }
 
             var phone = await _context.Phones
+                .Include(p => p.IdPhotoNavigation)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (phone == null)
             {
                 return NotFound();
             }
-
             return View(phone);
         }
 
         // GET: Phones/Create
         public IActionResult Create()
         {
+            ViewData["IdPhoto"] = new SelectList(_context.Images, "Id", "Path");
             return View();
         }
 
@@ -54,14 +56,12 @@ namespace LB1.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Company,Price")] Phone phone)
+        public async Task<IActionResult> Create([Bind("Id,Name,Company,Price,IdPhoto")] Phone phone)
         {
-            if (ModelState.IsValid)
-            {
                 _context.Add(phone);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
+            ViewData["IdPhoto"] = new SelectList(_context.Images, "Id", "Id", phone.IdPhoto);
             return View(phone);
         }
 
@@ -78,6 +78,7 @@ namespace LB1.Controllers
             {
                 return NotFound();
             }
+            ViewData["IdPhoto"] = new SelectList(_context.Images, "Id", "Path", phone.IdPhoto);
             return View(phone);
         }
 
@@ -86,34 +87,30 @@ namespace LB1.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Company,Price")] Phone phone)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Company,Price,IdPhoto")] Phone phone)
         {
             if (id != phone.Id)
             {
                 return NotFound();
             }
-
-            if (ModelState.IsValid)
+            try
             {
-                try
-                {
-                    _context.Update(phone);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!PhoneExists(phone.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                _context.Update(phone);
+                await _context.SaveChangesAsync();
             }
-            return View(phone);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!PhoneExists(phone.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            ViewData["IdPhoto"] = new SelectList(_context.Images, "Id", "Path", phone.IdPhoto);
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Phones/Delete/5
@@ -125,6 +122,7 @@ namespace LB1.Controllers
             }
 
             var phone = await _context.Phones
+                .Include(p => p.IdPhotoNavigation)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (phone == null)
             {

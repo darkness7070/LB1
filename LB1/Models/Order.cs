@@ -11,20 +11,15 @@ namespace LB1.Models
         [Key]
         public int Id { get; set; }
         [StringLength(50)]
-        [Display(Name = "Клиент")]
-        public string? Client { get; set; }
+        public string Client { get; set; } = null!;
         [StringLength(50)]
-        [Display(Name = "Адрес")]
-        public string? Address { get; set; }
+        public string Address { get; set; } = null!;
         [StringLength(50)]
-        [Display(Name = "Контакты")]
-        public string? Contact { get; set; }
-        [Display(Name = "Телефон")]
+        public string Contact { get; set; } = null!;
         public int PhoneId { get; set; }
 
         [ForeignKey("PhoneId")]
         [InverseProperty("Orders")]
-        [Display(Name = "Телефон")]
         public virtual Phone Phone { get; set; } = null!;
     }
 }
